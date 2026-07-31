@@ -1,0 +1,350 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Time Prediction</title>
+
+    <style>
+
+        body{
+            background:#ef7e7e;
+            font-family:Arial,Helvetica,sans-serif;
+        }
+
+        .container{
+            width:700px;
+            margin:30px auto;
+            background:rgb(209, 196, 196);
+            padding:25px;
+            border-radius:10px;
+            box-shadow:0px 0px 10px gray;
+        }
+
+        h1{
+            text-align:center;
+            color:#2c3e50;
+        }
+
+        label{
+            font-weight:bold;
+        }
+
+        input,select{
+            width:100%;
+            padding:10px;
+            margin-top:5px;
+            margin-bottom:5px;
+            border-radius:5px;
+            border:1px solid gray;
+            font-size:15px;
+        }
+
+        small{
+            color:gray;
+        }
+
+        input[type=submit]{
+
+            background:#007bff;
+            color:white;
+            border:none;
+            padding:12px;
+            font-size:18px;
+            cursor:pointer;
+            margin-top:20px;
+
+        }
+
+        input[type=submit]:hover{
+
+            background:#0056b3;
+
+        }
+
+        .result{
+
+            margin-top:30px;
+            text-align:center;
+            background:#d4edda;
+            color:green;
+            padding:15px;
+            border-radius:8px;
+            font-size:22px;
+            font-weight:bold;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Food Delivery Time Prediction</h1>
+
+<form action="/predictdata" method="POST">
+
+<label>Delivery Person Age</label>
+
+<input
+type="number"
+name="Delivery_person_Age"
+placeholder="Enter Age"
+min="18"
+max="60"
+step="1"
+required>
+
+<small>Allowed Range : 18 - 60 Years</small>
+
+<br><br>
+
+<label>Delivery Person Ratings</label>
+
+<input
+type="number"
+name="Delivery_person_Ratings"
+placeholder="Example : 4.5"
+min="1"
+max="5"
+step="0.1"
+required>
+
+<small>Allowed Range : 1.0 - 5.0</small>
+
+<br><br>
+
+<label>Vehicle Condition</label>
+
+<input
+type="number"
+name="Vehicle_condition"
+placeholder="0 to 3"
+min="0"
+max="3"
+step="1"
+required>
+
+<small>Allowed Values : 0 , 1 , 2 , 3</small>
+
+<br><br>
+
+<label>Multiple Deliveries</label>
+
+<input
+type="number"
+name="multiple_deliveries"
+placeholder="0 to 3"
+min="0"
+max="3"
+step="1"
+required>
+
+<small>Allowed Values : 0 - 3</small>
+
+<br><br>
+
+<label>Restaurant Latitude</label>
+
+<input
+type="number"
+name="Restaurant_latitude"
+placeholder="Example : 28.6139"
+min="-90"
+max="90"
+step="0.000001"
+required>
+
+<small>Latitude Range : -90 to 90</small>
+
+<br><br>
+
+<label>Restaurant Longitude</label>
+
+<input
+type="number"
+name="Restaurant_longitude"
+placeholder="Example : 77.2090"
+min="-180"
+max="180"
+step="0.000001"
+required>
+
+<small>Longitude Range : -180 to 180</small>
+
+<br><br>
+
+<label>Delivery Latitude</label>
+
+<input
+type="number"
+name="Delivery_location_latitude"
+placeholder="Example : 28.7041"
+min="-90"
+max="90"
+step="0.000001"
+required>
+
+<small>Latitude Range : -90 to 90</small>
+
+<br><br>
+
+<label>Delivery Longitude</label>
+
+<input
+type="number"
+name="Delivery_location_longitude"
+placeholder="Example : 77.1025"
+min="-180"
+max="180"
+step="0.000001"
+required>
+
+<small>Longitude Range : -180 to 180</small>
+
+<br><br>
+
+<label>Type of Order</label>
+
+<select name="Type_of_order" required>
+
+<option value="" disabled selected>Select Order Type</option>
+
+<option value="Snack">Snack</option>
+
+<option value="Meal">Meal</option>
+
+<option value="Drinks">Drinks</option>
+
+<option value="Buffet">Buffet</option>
+
+</select>
+
+<small>Please Select One Option</small>
+
+<br><br>
+
+<label>Type of Vehicle</label>
+
+<select name="Type_of_vehicle" required>
+
+<option value="" disabled selected>Select Vehicle</option>
+
+<option value="motorcycle">Motorcycle</option>
+
+<option value="scooter">Scooter</option>
+
+<option value="electric_scooter">Electric Scooter</option>
+
+<option value="bicycle">Bicycle</option>
+
+</select>
+
+<small>Select Vehicle Type</small>
+
+<br><br>
+<label>Festival</label>
+
+<select name="Festival" required>
+
+<option value="" disabled selected>Select Festival</option>
+
+<option value="Yes">Yes</option>
+
+<option value="No">No</option>
+
+</select>
+
+<small>Select whether the delivery was during a festival.</small>
+
+<br><br>
+
+<label>City</label>
+
+<select name="City" required>
+
+<option value="" disabled selected>Select City Type</option>
+
+<option value="Urban">Urban</option>
+
+<option value="Semi-Urban">Semi-Urban</option>
+
+<option value="Metropolitian">Metropolitian</option>
+
+</select>
+
+<small>Select the city category.</small>
+
+<br><br>
+
+<label>Road Traffic Density</label>
+
+<select name="Road_traffic_density" required>
+
+<option value="" disabled selected>Select Traffic Density</option>
+
+<option value="Low">Low</option>
+
+<option value="Medium">Medium</option>
+
+<option value="High">High</option>
+
+<option value="Jam">Jam</option>
+
+</select>
+
+<small>Select the traffic condition.</small>
+
+<br><br>
+
+<label>Weather Conditions</label>
+
+<select name="Weather_conditions" required>
+
+<option value="" disabled selected>Select Weather Condition</option>
+
+<option value="Sunny">Sunny</option>
+
+<option value="Cloudy">Cloudy</option>
+
+<option value="Fog">Fog</option>
+
+<option value="Sandstorms">Sandstorms</option>
+
+<option value="Windy">Windy</option>
+
+<option value="Stormy">Stormy</option>
+
+</select>
+
+<small>Select the current weather.</small>
+
+<br><br>
+
+<input type="submit" value="Predict Delivery Time">
+
+</form>
+
+{% if results %}
+
+<div class="result">
+
+Estimated Delivery Time
+
+<br><br>
+
+{{ results }} Minutes
+
+</div>
+
+{% endif %}
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,17 @@
+pandas
+numpy
+scikit-learn
+xgboost
+matplotlib
+seaborn
+PyYAML
+dvc
+dvc-s3
+mlflow==2.22.1
+dagshub==0.7.1
+joblib
+python-box
+ensure
+tqdm
+flask
+-e .
