@@ -16,7 +16,4 @@ if __name__ == "__main__":
 
     transformation = DataTransformation()
 
-    transformation.initate_data_transformation(
-        train_path,
-        test_path
-    )
+    transformation.initate_data_transformation(train_path, test_path)

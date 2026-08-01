@@ -5,32 +5,34 @@ from src.utils import load_obj
 from src.logger import logging
 from src.config.configuration import *
 
+
 class PredictPipeline:
     def __init__(self):
         pass
-    def predict(self,features):
+
+    def predict(self, features):
         try:
             # model_path='artifact\model_trainer_dir\model.pkl'
             # processor_path='artifact\data_transformation\2026-07-29-12-47-26\processor_dir\processor.pkl'
             # feature_path='artifact\data_transformation\2026-07-29-12-47-26\processor_dir\feature_engi.pkl'
 
-
             model_path = MODEL_FILE_PATH
             processor_path = PREPROCESSING_FILE
             feature_path = FEATURE_ENGI_FILE
 
-            model=load_obj(file_path=model_path)
-            feature=load_obj(file_path=feature_path)
-            processor=load_obj(file_path=processor_path)
+            model = load_obj(file_path=model_path)
+            feature = load_obj(file_path=feature_path)
+            processor = load_obj(file_path=processor_path)
 
-            fe_data=feature.transform(features)
-            data_scaled=processor.transform(fe_data)
-            pred=model.predict(data_scaled)
+            fe_data = feature.transform(features)
+            data_scaled = processor.transform(fe_data)
+            pred = model.predict(data_scaled)
 
             return pred
 
         except Exception as e:
-            raise CustomException(e,sys)
+            raise CustomException(e, sys)
+
 
 class CustomData:
 
@@ -49,7 +51,7 @@ class CustomData:
         Festival: str,
         City: str,
         Road_traffic_density: str,
-        Weather_conditions: str
+        Weather_conditions: str,
     ):
 
         self.Delivery_person_Age = Delivery_person_Age
@@ -68,12 +70,10 @@ class CustomData:
         self.Weather_conditions = Weather_conditions
 
     def get_data_as_data_frame(self):
-        
+
         try:
-            
 
             custom_data_input_dict = {
-
                 "Delivery_person_Age": [self.Delivery_person_Age],
                 "Delivery_person_Ratings": [self.Delivery_person_Ratings],
                 "Vehicle_condition": [self.Vehicle_condition],
@@ -87,8 +87,7 @@ class CustomData:
                 "Festival": [self.Festival],
                 "City": [self.City],
                 "Road_traffic_density": [self.Road_traffic_density],
-                "Weather_conditions": [self.Weather_conditions]
-
+                "Weather_conditions": [self.Weather_conditions],
             }
 
             df = pd.DataFrame(custom_data_input_dict)

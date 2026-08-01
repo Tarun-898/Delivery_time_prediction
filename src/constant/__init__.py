@@ -1,36 +1,38 @@
-import os,sys
+import os, sys
 from datetime import datetime
+
 
 def get_current_time():
     return f"{ datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}"
-    
-CURRENT_TIME=get_current_time()
 
-ROOT_DIR=os.getcwd()
-DATA_DIR="data_dir"
-DATASET="finalTrain.csv"
 
-ARTIFACT_DIR="artifact"
+CURRENT_TIME = get_current_time()
 
-DATA_INGESTION="data_ingestion"
-RAW_DATA_DIR="raw_data_dir"
-INGESTED_DATA_DIR="ingested_data_dir"
+ROOT_DIR = os.getcwd()
+DATA_DIR = "data_dir"
+DATASET = "finalTrain.csv"
 
-RAW_DATA="raw.csv"
-TRAIN_DATA="train.csv"
-TEST_DATA="test.csv"
+ARTIFACT_DIR = "artifact"
 
-#data Transformation constants
+DATA_INGESTION = "data_ingestion"
+RAW_DATA_DIR = "raw_data_dir"
+INGESTED_DATA_DIR = "ingested_data_dir"
 
-DATA_TRANSFORMATION="data_transformation"
+RAW_DATA = "raw.csv"
+TRAIN_DATA = "train.csv"
+TEST_DATA = "test.csv"
 
-PREPROCESS_DIR="processor_dir"
-PROCESS_DATA="processor.pkl"
+# data Transformation constants
 
-TRANSFORMATION_DIR="transformation_dir"
-TRANSFORM_TRAIN_DATA="train.csv"
-TRANSFORM_TEST_DATA="test.csv"
+DATA_TRANSFORMATION = "data_transformation"
 
-#model training constants
-MODEL_TRAINER_DIR="model_trainer_dir"
-MODEL_OBJECT="model.pkl"
+PREPROCESS_DIR = "processor_dir"
+PROCESS_DATA = "processor.pkl"
+
+TRANSFORMATION_DIR = "transformation_dir"
+TRANSFORM_TRAIN_DATA = "train.csv"
+TRANSFORM_TEST_DATA = "test.csv"
+
+# model training constants
+MODEL_TRAINER_DIR = "model_trainer_dir"
+MODEL_OBJECT = "model.pkl"
