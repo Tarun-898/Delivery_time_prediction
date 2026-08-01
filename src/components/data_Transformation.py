@@ -100,6 +100,7 @@ class FeatureEngineering(BaseEstimator,TransformerMixin):
     #     return self
 
     def fit(self, X, y=None):
+     self.is_fitted_ = True
      logging.info("Feature engineering fitted")
      return self
     
