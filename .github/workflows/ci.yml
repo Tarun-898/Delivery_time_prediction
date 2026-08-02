@@ -1,173 +1,94 @@
-# name: CI Pipeline
-
-# on:
-
-#   push:
-#     branches:
-#       - main
-
-#   pull_request:
-#     branches:
-#       - main
-
-# jobs:
-
-#   build:
-
-#     runs-on: ubuntu-latest
-
-#     steps:
-
-#     - name: Checkout Repository
-#       uses: actions/checkout@v4
-
-#     - name: Setup Python
-#       uses: actions/setup-python@v5
-#       with:
-#         python-version: "3.11"
-
-#     - name: Upgrade Pip
-#       run: |
-#         python -m pip install --upgrade pip
-
-#     - name: Install Dependencies
-#       run: |
-#         pip install -r requirements.txt
-
-#     - name: Check Code Formatting
-#       run: |
-#         black --check .
-
-#     - name: Lint Code
-#       run: |
-#         flake8 .
-
-#     - name: Run Unit Tests
-#       run: |
-#         pytest
-
-#     - name: Build Docker Image
-#       run: |
-#         docker build -t delivery_prediction .
-
-#     - name: Test Docker Image
-#       run: |
-#         docker run -d -p 5000:5000 --name app delivery_prediction
-
-#     - name: Wait
-#       run: sleep 10
-
-#     - name: Stop Container
-#       run: docker stop app
-
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
       - main
 
-  pull_request:
-    branches:
-      - main
-
 jobs:
+
   build:
 
     runs-on: ubuntu-latest
 
     steps:
 
-    # ==========================
-    # Checkout Repository
-    # ==========================
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    # ==========================
-    # Setup Python
-    # ==========================
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
         python-version: "3.11"
 
-    # ==========================
-    # Upgrade Pip
-    # ==========================
-    - name: Upgrade Pip
-      run: |
-        python -m pip install --upgrade pip
-
-    # ==========================
-    # Install Dependencies
-    # ==========================
     - name: Install Dependencies
       run: |
+        python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install black==25.9.0 flake8==7.3.0
+        pip install black flake8
 
-    # ==========================
-    # Check Code Formatting
-    # ==========================
-    - name: Check Code Formatting
-      run: |
-        black --check .
+    - name: Check Formatting
+      run: black --check .
 
-    # ==========================
-    # Lint Code
-    # ==========================
-    - name: Lint Code
-      run: |
-        flake8 .
+    - name: Lint
+      run: flake8 .
 
-    # ==========================
-    # Build Docker Image
-    # ==========================
     - name: Build Docker Image
-      run: |
-        docker build -t delivery_prediction .
+      run: docker build -t delivery_prediction .
 
-    # ==========================
-    # Run Docker Container
-    # ==========================
     - name: Run Docker Container
-      run: |
-        docker run -d --name app -p 5000:5000 delivery_prediction
+      run: docker run -d --name app -p 5000:5000 delivery_prediction
 
-    # ==========================
-    # Wait for Flask to Start
-    # ==========================
-    - name: Wait for Application
-      run: |
-        sleep 10
+    - name: Wait
+      run: sleep 15
 
-    # ==========================
-    # Check Running Container
-    # ==========================
-    - name: Check Running Container
-      run: |
-        docker ps
-
-    # ==========================
-    # Show Container Logs
-    # ==========================
-    - name: Show Container Logs
-      run: |
-        docker logs app
-
-    # ==========================
-    # Health Check
-    # ==========================
     - name: Health Check
-      run: |
-        curl --fail http://localhost:5000/ || exit 1
+      run: curl --fail http://localhost:5000 || exit 1
 
-    # ==========================
-    # Stop & Remove Container
-    # ==========================
-    - name: Cleanup Docker
+    - name: Docker Login
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Push Image
+      run: |
+        docker tag delivery_prediction ${{ secrets.DOCKER_IMAGE }}:latest
+        docker push ${{ secrets.DOCKER_IMAGE }}:latest
+
+    - name: Cleanup
       if: always()
       run: |
-        docker stop app
-        docker rm app
+        docker stop app || true
+        docker rm app || true
+
+
+  deploy:
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v1.0.3
+
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+
+        script: |
+
+          sudo docker pull ${{ secrets.DOCKER_IMAGE }}:latest
+
+          sudo docker stop delivery_app || true
+
+          sudo docker rm delivery_app || true
+
+          sudo docker run -d \
+            --name delivery_app \
+            --restart always \
+            -p 5000:5000 \
+            ${{ secrets.DOCKER_IMAGE }}:latest
