@@ -16,7 +16,7 @@ mlflow.db
 mlruns/
 
 # Generated Artifacts
-artifact/
+
 
 # IDE Files
 .vscode/
